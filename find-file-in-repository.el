@@ -121,7 +121,8 @@
     ("_darcs" . ,(lambda (dir)
                    (ffir-shell-command "darcs show files -0"   "\0" dir)))
     (".bzr"   . ,(lambda (dir)
-                   (ffir-shell-command "bzr ls --versioned -0" "\0" dir)))
+                   (ffir-shell-command
+                    "bzr ls --versioned --recursive -0"        "\0" dir)))
     ("_MTN"   . ,(lambda (dir)
                    (ffir-shell-command "mtn list known"        "\n" dir)))
 
@@ -145,10 +146,11 @@
   "Actually find file to open, using ido."
   (add-hook 'ido-setup-hook 'ffir-ido-setup)
   (unwind-protect
-      (let ((file (ido-completing-read "Find file in repository: "
-                                       (mapcar 'car file-list))))
+      (let* ((file (ido-completing-read "Find file in repository: "
+                                        (mapcar 'car file-list)))
+             (path (or (cdr (assoc file file-list)) file)))
         (cond
-         (file (find-file (cdr (assoc file file-list))))
+         (file (find-file path))
          ((eq ido-exit 'fallback) (ido-find-file))))
     (remove-hook 'ido-setup-hook 'ffir-ido-setup)))
 
