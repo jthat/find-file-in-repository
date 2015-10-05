@@ -56,7 +56,8 @@
                                  (shell-quote-argument working-dir) command))))
     (let ((files (delete "" (split-string command-output file-separator))))
       (mapcar (lambda (file)
-                (cons file (expand-file-name file working-dir)))
+                (cons (file-name-nondirectory file)
+                      (expand-file-name file working-dir)))
               files))))
 
 (defun ffir-locate-dominating-file (file name)
